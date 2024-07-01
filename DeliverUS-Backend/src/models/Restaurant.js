@@ -45,6 +45,9 @@ const loadModel = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.DOUBLE
     },
+    promoted: {
+      type: DataTypes.BOOLEAN
+    },
     averageServiceMinutes: DataTypes.DOUBLE,
     email: DataTypes.STRING,
     phone: DataTypes.STRING,

@@ -1,10 +1,29 @@
 import { Restaurant, Product, RestaurantCategory, ProductCategory } from '../models/models.js'
 
+const promote = async function (req, res) {
+  try {
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId)
+    if (restaurant.promoted) {
+      restaurant.promoted = false
+    } else {
+      restaurant.promoted = true
+      const restaurant2 = await Restaurant.findOne({ where: { promoted: true, userId: req.user.id } })
+      if (restaurant2 !== null) {
+        restaurant2.promoted = false
+        await restaurant2.save()
+      }
+    }
+    await restaurant.save()
+    res.json(restaurant)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+}
 const index = async function (req, res) {
   try {
     const restaurants = await Restaurant.findAll(
       {
-        attributes: { exclude: ['userId'] },
+        attributes: { exclude: ['userId', 'promoted'] },
         include:
       {
         model: RestaurantCategory,
@@ -28,7 +47,8 @@ const indexOwner = async function (req, res) {
         include: [{
           model: RestaurantCategory,
           as: 'restaurantCategory'
-        }]
+        }],
+        order: [['promoted', 'DESC']]
       })
     res.json(restaurants)
   } catch (err) {
@@ -101,6 +121,7 @@ const RestaurantController = {
   create,
   show,
   update,
-  destroy
+  destroy,
+  promote
 }
 export default RestaurantController

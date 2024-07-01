@@ -30,6 +30,9 @@ module.exports = {
         defaultValue: 0.0,
         type: Sequelize.DOUBLE
       },
+      promoted: {
+        type: Sequelize.BOOLEAN
+      },
       averageServiceMinutes: {
         allowNull: true,
         type: Sequelize.DOUBLE
